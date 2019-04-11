@@ -2,6 +2,8 @@
 
 A command line tool for authenticating to Kubernetes clusters.
 
+[![Build status](https://travis-ci.org/anton-johansson/k8s-login.svg)](https://travis-ci.org/anton-johansson/k8s-login)
+
 
 ## Credits
 
