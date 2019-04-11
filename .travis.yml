@@ -1,0 +1,21 @@
+language: go
+go:
+  - 1.x
+  - 1.12.x
+  - master
+script:
+  - go test -v
+before_deploy:
+  - 'env GOOS=darwin GOARCH=amd64 go build -o build/k8s-login-darwin-amd64-${TRAVIS_TAG} .'
+  - 'env GOOS=linux GOARCH=amd64 go build -o build/k8s-login-linux-amd64-${TRAVIS_TAG} .'
+  - 'env GOOS=windows GOARCH=amd64 go build -o build/k8s-login-windows-amd64-${TRAVIS_TAG}.exe .'
+deploy:
+  provider: releases
+  api_key: '${GITHUB_TOKEN}'
+  file:
+    - 'build/k8s-login-darwin-amd64-${TRAVIS_TAG}'
+    - 'build/k8s-login-linux-amd64-${TRAVIS_TAG}'
+    - 'build/k8s-login-windows-amd64-${TRAVIS_TAG}.exe'
+  skip_cleanup: true
+  on:
+    tags: true
