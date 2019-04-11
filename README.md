@@ -1,0 +1,60 @@
+# k8s-login
+
+A command line tool for authenticating to Kubernetes clusters.
+
+
+## Credits
+
+Most of the code here is taken from/inspired by other repositories, primarily the [example app from dex](https://github.com/dexidp/dex/tree/master/cmd/example-app). This project is mainly to have a properly released application that can more easily be re-used.
+
+
+## Installation
+
+No released versions yet.
+
+
+## Usage
+
+### Requirements
+
+This command line tool requires you to run [dex](https://github.com/dexidp/dex) with the following client configured:
+
+```yaml
+    staticClients:
+      - id: k8s-login
+        name: k8s-login
+        secret: lhHN7keNTf4MXEIH3WF4NUL701qITv9Q
+        redirectURIs:
+          - http://localhost:5555/callback
+```
+
+It also requires you to pass in some arguments to `kube-apiserver`, like this:
+
+```
+  --oidc-issuer-url=https://dex.svc.example.com \
+  --oidc-client-id=k8s-login \
+  --oidc-username-claim=email \
+  --oidc-groups-claim=groups \
+```
+
+### Command line interface
+
+```shell
+$ k8s-login auth <server-name>
+```
+
+
+### Assumtptions
+
+This CLI currently assumes that your Kubernetes API is reachable on a URL that looks like this:
+
+```
+http(s)://k8s.svc.<something>:6443
+```
+
+And it expects your Dex to be reachable by replacing `k8s.svc` with `dex.svc` and removing the port. It also assumes that the OAuth2 client ID and password is as given in the example above. It can always be overriden with the arguments `--client-id` and `--client-secret`, but it makes the CLI a little messier to use.
+
+
+## License
+
+This project is licensed under Apache 2.0 license. Also refer to the [license of dex](https://github.com/dexidp/dex/blob/master/LICENSE).
