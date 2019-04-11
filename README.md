@@ -44,7 +44,7 @@ $ k8s-login auth <server-name>
 ```
 
 
-### Assumtptions
+### Assumptions
 
 This CLI currently assumes that your Kubernetes API is reachable on a URL that looks like this:
 
