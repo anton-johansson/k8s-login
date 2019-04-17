@@ -224,5 +224,5 @@ func init() {
 	authCommand.Flags().IntVarP(&app.port, "local-port", "p", 5555, "The local port to host the temporary web server on")
 	authCommand.Flags().StringVarP(&app.kubeconfigFileName, "kubeconfig", "k", kubernetes.GetDefaultKubeConfigFileName(), "The path to the kubeconfig")
 	authCommand.Flags().BoolVarP(&app.updateContext, "update-context", "c", true, "Indicates whether or not to update the actual context of the kubeconfig")
-	RootCommand.AddCommand(authCommand)
+	rootCommand.AddCommand(authCommand)
 }

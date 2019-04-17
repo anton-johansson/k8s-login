@@ -36,5 +36,5 @@ var serversCommand = &cobra.Command{
 func init() {
 	serversCommand.Flags().BoolVarP(&verbose, "verbose", "v", false, "Whether or not to use verbose output")
 	serversCommand.Flags().StringVar(&kubeconfigFileName, "kubeconfig", kubernetes.GetDefaultKubeConfigFileName(), "The path to the kubeconfig")
-	RootCommand.AddCommand(serversCommand)
+	rootCommand.AddCommand(serversCommand)
 }

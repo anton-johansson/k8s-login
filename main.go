@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	cmd.RootCommand.Execute()
+	cmd.Execute()
 
 	/*
 		k8s_client "k8s.io/client-go/tools/clientcmd"
