@@ -6,9 +6,7 @@ go:
 script:
   - go test -v
 before_deploy:
-  - 'env GOOS=darwin GOARCH=amd64 go build -o build/k8s-login-darwin-amd64-${TRAVIS_TAG} .'
-  - 'env GOOS=linux GOARCH=amd64 go build -o build/k8s-login-linux-amd64-${TRAVIS_TAG} .'
-  - 'env GOOS=windows GOARCH=amd64 go build -o build/k8s-login-windows-amd64-${TRAVIS_TAG}.exe .'
+  - ./build.sh
 deploy:
   provider: releases
   api_key: '${GITHUB_TOKEN}'
