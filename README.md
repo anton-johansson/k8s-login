@@ -10,6 +10,13 @@ A command line tool for authenticating to Kubernetes clusters.
 Most of the code here is taken from/inspired by other repositories, primarily the [example app from dex](https://github.com/dexidp/dex/tree/master/cmd/example-app). This project is mainly to have a properly released application that can more easily be re-used.
 
 
+## Building
+
+```shell
+$ ./build.sh
+```
+
+
 ## Installation
 
 No released versions yet.
