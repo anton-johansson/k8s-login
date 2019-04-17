@@ -46,7 +46,7 @@ func GetKubeConfig(argument string) (*KubeConfig, error) {
 }
 
 // UpdateKubeConfig updates the local kubeconfig (~/.kube/config) with the given user.
-func UpdateKubeConfig(kubeconfig *KubeConfig, user UserData, updateContext bool) {
+func UpdateKubeConfig(kubeconfig *KubeConfig, user UserData, updateContext bool, serverName string) {
 	authInfo := api.NewAuthInfo()
 	if current, ok := kubeconfig.config.AuthInfos[user.Name]; ok {
 		authInfo = current
@@ -63,5 +63,17 @@ func UpdateKubeConfig(kubeconfig *KubeConfig, user UserData, updateContext bool)
 		},
 	}
 	kubeconfig.config.AuthInfos[user.Name] = authInfo
+
+	if updateContext {
+		context := api.NewContext()
+		if current, ok := kubeconfig.config.Contexts[serverName]; ok {
+			context = current
+		}
+		context.Cluster = serverName
+		context.AuthInfo = user.Name
+		kubeconfig.config.Contexts[serverName] = context
+		kubeconfig.config.CurrentContext = serverName
+	}
+
 	client.WriteToFile(*kubeconfig.config, kubeconfig.FileName)
 }

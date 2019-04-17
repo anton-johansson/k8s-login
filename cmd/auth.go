@@ -25,7 +25,7 @@ type loginApp struct {
 	clientSecret       string
 	port               int
 	kubeconfigFileName string
-	updateContext      bool
+	noUpdateContext    bool
 	shutdownChannel    chan bool
 
 	// State
@@ -33,6 +33,7 @@ type loginApp struct {
 	client     *http.Client
 	provider   *oidc.Provider
 	verifier   *oidc.IDTokenVerifier
+	serverName string
 }
 
 var serverNames = getServerNames()
@@ -58,8 +59,8 @@ var authCommand = &cobra.Command{
 		}
 		app.kubeconfig = kubeconfig
 
-		serverName := args[0]
-		server, error := getServerByName(kubeconfig, serverName)
+		app.serverName = args[0]
+		server, error := getServerByName(kubeconfig, app.serverName)
 		if error != nil {
 			return error
 		}
@@ -180,7 +181,7 @@ func (app *loginApp) finalizeLogin(writer http.ResponseWriter, request *http.Req
 		IssuerURL:    unmarshalledClaims["iss"].(string),
 	}
 
-	kubernetes.UpdateKubeConfig(app.kubeconfig, user, app.updateContext)
+	kubernetes.UpdateKubeConfig(app.kubeconfig, user, !app.noUpdateContext, app.serverName)
 
 	message := "Successfully updated '" + app.kubeconfig.FileName + "'"
 	fmt.Println(message)
@@ -226,7 +227,7 @@ func init() {
 	authCommand.Flags().StringVarP(&app.clientSecret, "client-secret", "s", "lhHN7keNTf4MXEIH3WF4NUL701qITv9Q", "The OAuth2 client secret of this application")
 	authCommand.Flags().IntVarP(&app.port, "local-port", "p", 5555, "The local port to host the temporary web server on")
 	authCommand.Flags().StringVarP(&app.kubeconfigFileName, "kubeconfig", "k", kubernetes.GetDefaultKubeConfigFileName(), "The path to the kubeconfig")
-	authCommand.Flags().BoolVarP(&app.updateContext, "update-context", "c", true, "Indicates whether or not to update the actual context of the kubeconfig")
+	authCommand.Flags().BoolVarP(&app.noUpdateContext, "no-update-context", "c", false, "If set, no context will be set in the kubeconfig")
 	rootCommand.AddCommand(authCommand)
 }
 
