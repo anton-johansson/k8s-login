@@ -35,10 +35,13 @@ type loginApp struct {
 	verifier   *oidc.IDTokenVerifier
 }
 
+var serverNames = getServerNames()
+
 var app loginApp
 var authCommand = &cobra.Command{
 	Use:   "auth [server]",
 	Short: "Attempts to authenticate to the given server",
+	ValidArgs: serverNames,
 	Args: func(command *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			return errors.New("requires a server")
@@ -225,4 +228,17 @@ func init() {
 	authCommand.Flags().StringVarP(&app.kubeconfigFileName, "kubeconfig", "k", kubernetes.GetDefaultKubeConfigFileName(), "The path to the kubeconfig")
 	authCommand.Flags().BoolVarP(&app.updateContext, "update-context", "c", true, "Indicates whether or not to update the actual context of the kubeconfig")
 	rootCommand.AddCommand(authCommand)
+}
+
+func getServerNames() []string {
+	fileName := kubernetes.GetDefaultKubeConfigFileName()
+	if kubeconfig, err := kubernetes.GetKubeConfig(fileName); err == nil {
+		servers := kubernetes.GetServers(kubeconfig)
+		serverNames := []string{}
+		for _, server := range servers {
+			serverNames = append(serverNames, server.Name)
+		}
+		return serverNames
+	}
+	return []string{}
 }
