@@ -11,9 +11,9 @@ deploy:
   provider: releases
   api_key: '${GITHUB_TOKEN}'
   file:
-    - 'build/k8s-login-darwin-amd64-${TRAVIS_TAG}'
-    - 'build/k8s-login-linux-amd64-${TRAVIS_TAG}'
-    - 'build/k8s-login-windows-amd64-${TRAVIS_TAG}.exe'
+    - 'build/k8s-login-darwin-amd64'
+    - 'build/k8s-login-linux-amd64'
+    - 'build/k8s-login-windows-amd64.exe'
   skip_cleanup: true
   on:
     tags: true
