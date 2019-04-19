@@ -1,13 +1,23 @@
 package version
 
 var (
-	gitTag string
+	version   string
+	goVersion string
+	commit    string
 )
 
-// Version returns the version number
-func Version() string {
-	if len(gitTag) == 0 {
-		return "dev"
+// VersionInfo holds information about the current version
+type VersionInfo struct {
+	Version   string
+	GoVersion string
+	Commit    string
+}
+
+// Info returns the version information
+func Info() VersionInfo {
+	return VersionInfo{
+		Version:   version,
+		GoVersion: goVersion,
+		Commit:    commit,
 	}
-	return gitTag
 }

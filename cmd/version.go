@@ -6,14 +6,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var versionCommand = &cobra.Command{
-	Use:   "version",
-	Short: "Prints the current version of this tool",
-	Run: func(command *cobra.Command, args []string) {
-		fmt.Println(version.Version())
-	},
-}
+var short bool
 
 func init() {
-	rootCommand.AddCommand(versionCommand)
+	var command = &cobra.Command{
+		Use:   "version",
+		Short: "Prints the current version of this tool",
+		Run: func(command *cobra.Command, args []string) {
+			info := version.Info()
+			if short {
+				fmt.Println(info.Version)
+			} else {
+				fmt.Println(info.Version + " (go version: " + info.GoVersion + ", commit: " + info.Commit + ")")
+			}
+		},
+	}
+
+	command.Flags().BoolVarP(&short, "short", "s", false, "Whether or not to output the actual version only")
+	rootCommand.AddCommand(command)
 }

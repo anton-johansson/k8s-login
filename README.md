@@ -13,7 +13,7 @@ Most of the code here is taken from/inspired by other repositories, primarily th
 ## Building
 
 ```shell
-$ ./build.sh
+$ make
 ```
 
 
