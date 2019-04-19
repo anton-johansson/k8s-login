@@ -7,6 +7,8 @@ stages:
   - test
   - build
   - deploy
+before_install:
+  - make install
 jobs:
   include:
     - stage: test
