@@ -1,16 +1,16 @@
 package kubernetes
 
 import (
-	"os"
 	client "k8s.io/client-go/tools/clientcmd"
 	api "k8s.io/client-go/tools/clientcmd/api"
+	"os"
 )
 
 // KubeConfig holds a kubeconfig and its file name
 type KubeConfig struct {
 	// FileName is the file name of the kubeconfig file
 	FileName string
-	config *api.Config
+	config   *api.Config
 }
 
 // GetDefaultKubeConfigFileName gets the default file name of the kubeconfig
@@ -41,7 +41,7 @@ func GetKubeConfig(argument string) (*KubeConfig, error) {
 
 	return &KubeConfig{
 		FileName: fileName,
-		config: config,
+		config:   config,
 	}, error
 }
 
@@ -55,10 +55,10 @@ func UpdateKubeConfig(kubeconfig *KubeConfig, user UserData, updateContext bool,
 	authInfo.AuthProvider = &api.AuthProviderConfig{
 		Name: "oidc",
 		Config: map[string]string{
-			"client-id": user.ClientID,
-			"client-secret": user.ClientSecret,
-			"id-token": user.IDToken,
-			"refresh-token": user.RefreshToken,
+			"client-id":      user.ClientID,
+			"client-secret":  user.ClientSecret,
+			"id-token":       user.IDToken,
+			"refresh-token":  user.RefreshToken,
 			"idp-issuer-url": user.IssuerURL,
 		},
 	}

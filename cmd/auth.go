@@ -40,8 +40,8 @@ var serverNames = getServerNames()
 
 var app loginApp
 var authCommand = &cobra.Command{
-	Use:   "auth [server]",
-	Short: "Attempts to authenticate to the given server",
+	Use:       "auth [server]",
+	Short:     "Attempts to authenticate to the given server",
 	ValidArgs: serverNames,
 	Args: func(command *cobra.Command, args []string) error {
 		if len(args) < 1 {
