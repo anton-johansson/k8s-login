@@ -14,16 +14,16 @@ LDFLAGS = -ldflags "\
 	"
 
 install:
-	go mod download
+	go build ./...
 
 fmt:
-	gofmt -s -d -e -w .; \
+	gofmt -s -d -e -w .
 
 vet:
-	go vet ${PACKAGE_LIST}; \
+	go vet ${PACKAGE_LIST}
 
 test: install
-	go test ${PACKAGE_LIST}; \
+	go test ${PACKAGE_LIST}
 
 linux: install
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-linux-amd64 .
