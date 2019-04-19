@@ -14,7 +14,7 @@ LDFLAGS = -ldflags "\
 	"
 
 install:
-	go mod download
+	go get -v -d ./...
 
 fmt:
 	gofmt -s -d -e -w .
