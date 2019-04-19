@@ -13,22 +13,25 @@ LDFLAGS = -ldflags "\
 	-X github.com/anton-johansson/k8s-login/version.commit=${COMMIT} \
 	"
 
+install:
+	go mod download
+
 fmt:
 	gofmt -s -d -e -w .; \
 
 vet:
 	go vet ${PACKAGE_LIST}; \
 
-test:
+test: install
 	go test ${PACKAGE_LIST}; \
 
-linux:
+linux: install
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-linux-amd64 .
 
-darwin:
+darwin: install
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-darwin-amd64 .
 
-windows:
+windows: install
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-windows-amd64.exe .
 
 build: linux darwin windows
