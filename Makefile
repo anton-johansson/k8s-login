@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := build
 
 BINARY = k8s-login
-VERSION = v0.0.2
+VERSION = v0.0.3
 
 GO_VERSION = $(shell go version | awk -F\go '{print $$3}' | awk '{print $$1}')
 COMMIT = $(shell git rev-parse HEAD)
