@@ -22,7 +22,7 @@ $ make
 Linux:
 
 ```shell
-$ wget https://github.com/anton-johansson/k8s-login/releases/download/v0.0.1/k8s-login-linux-amd64 -O - | sudo tee /usr/local/bin/k8s-login > /dev/null
+$ wget https://github.com/anton-johansson/k8s-login/releases/download/v0.0.3/k8s-login-linux-amd64 -O - | sudo tee /usr/local/bin/k8s-login > /dev/null
 $ sudo chmod +x /usr/local/bin/k8s-login
 ```
 
