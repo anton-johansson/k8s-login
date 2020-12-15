@@ -7,22 +7,24 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/anton-johansson/k8s-login/kubernetes"
-	"github.com/coreos/go-oidc"
-	"github.com/spf13/cobra"
-	"golang.org/x/oauth2"
 	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/anton-johansson/k8s-login/kubernetes"
+	"github.com/coreos/go-oidc"
+	"github.com/spf13/cobra"
+	"golang.org/x/oauth2"
 )
 
 type loginApp struct {
 	// Parameters
 	clientID           string
 	clientSecret       string
+	dexURL             string
 	port               int
 	kubeconfigFileName string
 	noUpdateContext    bool
@@ -40,8 +42,8 @@ var serverNames = getServerNames()
 
 var app loginApp
 var authCommand = &cobra.Command{
-	Use:   "auth [server]",
-	Short: "Attempts to authenticate to the given server",
+	Use:       "auth [server]",
+	Short:     "Attempts to authenticate to the given server",
 	ValidArgs: serverNames,
 	Args: func(command *cobra.Command, args []string) error {
 		if len(args) < 1 {
@@ -64,7 +66,7 @@ var authCommand = &cobra.Command{
 		if error != nil {
 			return error
 		}
-		location := convertServerAddressToDex(server)
+		location := getDexURL(server)
 
 		client := &http.Client{
 			Transport: &http.Transport{
@@ -138,13 +140,13 @@ func (app *loginApp) finalizeLogin(writer http.ResponseWriter, request *http.Req
 		return
 	}
 
-	rawIdToken, ok := token.Extra("id_token").(string)
+	rawIDToken, ok := token.Extra("id_token").(string)
 	if !ok {
 		http.Error(writer, "No ID token in the token response", http.StatusInternalServerError)
 		return
 	}
 
-	idToken, error := app.verifier.Verify(context, rawIdToken)
+	idToken, error := app.verifier.Verify(context, rawIDToken)
 	if error != nil {
 		fmt.Println(error)
 		http.Error(writer, "Failed to verify token", http.StatusInternalServerError)
@@ -176,7 +178,7 @@ func (app *loginApp) finalizeLogin(writer http.ResponseWriter, request *http.Req
 		Name:         unmarshalledClaims["name"].(string),
 		ClientID:     app.clientID,
 		ClientSecret: app.clientSecret,
-		IDToken:      rawIdToken,
+		IDToken:      rawIDToken,
 		RefreshToken: token.RefreshToken,
 		IssuerURL:    unmarshalledClaims["iss"].(string),
 	}
@@ -199,9 +201,16 @@ func getServerByName(kubeconfig *kubernetes.KubeConfig, serverName string) (kube
 	return kubernetes.Server{}, errors.New("No server with name '" + serverName + "'")
 }
 
+func getDexURL(server kubernetes.Server) string {
+	if app.dexURL != "" {
+		return app.dexURL
+	}
+	return convertServerAddressToDex(server)
+}
+
 func convertServerAddressToDex(server kubernetes.Server) string {
 	address := server.Address
-	address = strings.Replace(address, "://k8s.svc", "://dex.svc", 1)
+	address = strings.Replace(address, "://k8s.", "://dex.", 1)
 	address = strings.Replace(address, ":6443", "", 1)
 	return address
 }
@@ -225,6 +234,7 @@ func open(location string) error {
 func init() {
 	authCommand.Flags().StringVarP(&app.clientID, "client-id", "i", "k8s-login", "The OAuth2 client ID of this application")
 	authCommand.Flags().StringVarP(&app.clientSecret, "client-secret", "s", "lhHN7keNTf4MXEIH3WF4NUL701qITv9Q", "The OAuth2 client secret of this application")
+	authCommand.Flags().StringVarP(&app.dexURL, "dex-url", "d", "", "The optional URL to reach Dex. If not present, the URL will be guessed based on the Kubernetes server URL")
 	authCommand.Flags().IntVarP(&app.port, "local-port", "p", 5555, "The local port to host the temporary web server on")
 	authCommand.Flags().StringVarP(&app.kubeconfigFileName, "kubeconfig", "k", kubernetes.GetDefaultKubeConfigFileName(), "The path to the kubeconfig")
 	authCommand.Flags().BoolVarP(&app.noUpdateContext, "no-update-context", "c", false, "If set, no context will be set in the kubeconfig")

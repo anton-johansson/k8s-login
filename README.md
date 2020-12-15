@@ -63,10 +63,10 @@ $ k8s-login auth <server-name>
 This CLI currently assumes that your Kubernetes API is reachable on a URL that looks like this:
 
 ```
-http(s)://k8s.svc.<something>:6443
+http(s)://k8s.<something>:6443
 ```
 
-And it expects your Dex to be reachable by replacing `k8s.svc` with `dex.svc` and removing the port. It also assumes that the OAuth2 client ID and password is as given in the example above. It can always be overriden with the arguments `--client-id` and `--client-secret`, but it makes the CLI a little messier to use.
+And it expects your Dex to be reachable by replacing `://k8s.` with `://dex.` and removing the port. It also assumes that the OAuth2 client ID and password is as given in the example above. It can always be overriden with the arguments `--client-id` and `--client-secret`, but it makes the CLI a little messier to use.
 
 
 ## License
