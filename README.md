@@ -1,3 +1,5 @@
+**DEPRECATED**: This project has been deprecated in favor of [kubelogin], which does the same thing, only a lot smarter. Check it out!
+
 # k8s-login
 
 A command line tool for authenticating to Kubernetes clusters.
